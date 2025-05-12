@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Conversor de Criptomoedas</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #ffffff;
+      color: #333;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 20px;
+      flex-direction: column;
+    }
+
+    .menu {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      padding: 10px 20px;
+      width: 100%;
+      box-sizing: border-box;
+      border-radius: 8px;
+      margin-bottom: 30px;
+    }
+
+    .menu a {
+      color: #333;
+      text-decoration: none;
+      font-size: 18px;
+      font-weight: bold;
+      transition: color 0.3s ease;
+    }
+
+    .menu a:hover {
+      color: #FFD700;
+    }
+
+    .converter {
+      background: #fdfdfd;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      padding: 30px;
+      max-width: 400px;
+      width: 100%;
+      border-top: 8px solid #FFD700;
+    }
+
+    h1 {
+      font-size: 24px;
+      margin-bottom: 20px;
+      color: #333;
+      text-align: center;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: 600;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      margin-bottom: 20px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      box-sizing: border-box;
+    }
+
+    .switch {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 15px;
+    }
+
+    .toggle-switch {
+      position: relative;
+      display: inline-block;
+      width: 50px;
+      height: 26px;
+      margin: 0 10px;
+    }
+
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      background-color: #ccc;
+      border-radius: 34px;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      transition: 0.4s;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 4px;
+      bottom: 4px;
+      background-color: white;
+      transition: 0.4s;
+      border-radius: 50%;
+    }
+
+    input:checked + .slider {
+      background-color: #FFD700;
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(24px);
+    }
+
+    .result {
+      font-size: 18px;
+      font-weight: bold;
+      color: #444;
+      text-align: center;
+      background-color: #fff8dc;
+      border-radius: 8px;
+      padding: 15px;
+    }
+
+    .advertisement-container {
+      width: 100%;
+      height: 800px;
+      margin-top: 40px;
+    }
+
+    .advertisement-container iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="menu">
+    <a href="#">Comunidade</a>
+    <a href="#">Sobre</a>
+  </div>
+
+  <div class="converter">
+    <h1>Conversor Cripto para Real</h1>
+
+    <label for="crypto">Escolha a moeda:</label>
+    <select id="crypto"></select>
+
+    <div class="switch">
+      <label for="modeToggle">Modo:</label>
+      <label class="toggle-switch">
+        <input type="checkbox" id="modeToggle">
+        <span class="slider"></span>
+      </label>
+      <span id="modeLabel">Decimal</span>
+    </div>
+
+    <label for="amount">Valor:</label>
+    <input type="number" id="amount" placeholder="Digite o valor"/>
+
+    <div class="result" id="result">Digite um valor...</div>
+  </div>
+
+  <!-- Anúncio responsivo grande -->
+  <div class="advertisement-container">
+    <iframe src="https://www.rotate4all.com/ptp/promote-275727" allowfullscreen></iframe>
+  </div>
+
+  <script>
+    const amountInput = document.getElementById('amount');
+    const resultDiv = document.getElementById('result');
+    const cryptoSelect = document.getElementById('crypto');
+    const modeToggle = document.getElementById('modeToggle');
+    const modeLabel = document.getElementById('modeLabel');
+
+    let prices = {};
+    let coinSymbols = {};
+
+    async function fetchTopCoins() {
+      try {
+        const res = await fetch("https://api.coingecko.com/api/v3/coins/markets?vs_currency=brl&order=market_cap_desc&per_page=50&page=1");
+        const data = await res.json();
+        prices = {};
+        coinSymbols = {};
+        cryptoSelect.innerHTML = '';
+        data.forEach(coin => {
+          prices[coin.id] = coin.current_price;
+          coinSymbols[coin.id] = coin.symbol.toUpperCase();
+          const option = document.createElement('option');
+          option.value = coin.id;
+          option.textContent = `${coin.name} (${coin.symbol.toUpperCase()})`;
+          cryptoSelect.appendChild(option);
+        });
+        updateConversion();
+      } catch (error) {
+        resultDiv.textContent = "Erro ao carregar cotações.";
+        console.error(error);
+      }
+    }
+
+    function formatBRL(value) {
+      return value.toLocaleString('pt-BR', {
+        style: 'currency',
+        currency: 'BRL'
+      });
+    }
+
+    function getCurrentMode() {
+      return modeToggle.checked ? "sats" : "decimal";
+    }
+
+    function updateConversion() {
+      const crypto = cryptoSelect.value;
+      const mode = getCurrentMode();
+      let value = parseFloat(amountInput.value);
+
+      if (isNaN(value) || value <= 0 || !prices[crypto]) {
+        resultDiv.textContent = "Digite um valor válido.";
+        return;
+      }
+
+      if (mode === "sats") {
+        value = value / 100_000_000;
+      }
+
+      const brlRate = prices[crypto];
+      const converted = value * brlRate;
+
+      resultDiv.textContent = `${value.toFixed(8)} ${coinSymbols[crypto]} = ${formatBRL(converted)}`;
+    }
+
+    amountInput.addEventListener("input", updateConversion);
+    cryptoSelect.addEventListener("change", updateConversion);
+    modeToggle.addEventListener("change", () => {
+      modeLabel.textContent = modeToggle.checked ? "Satoshis" : "Decimal";
+      updateConversion();
+    });
+
+    fetchTopCoins();
+  </script>
+</body>
+</html>
