@@ -5,62 +5,65 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Conversor de Criptomoedas</title>
   <style>
+    :root {
+      --bg-color: #121212;
+      --text-color: #f5f5f5;
+      --accent: #FFD700;
+      --card-bg: #1f1f1f;
+      --input-bg: #2b2b2b;
+      --shadow: rgba(0, 0, 0, 0.5);
+    }
+
     body {
       margin: 0;
       font-family: 'Segoe UI', sans-serif;
-      background-color: #ffffff;
-      color: #333;
+      background-color: var(--bg-color);
+      color: var(--text-color);
       display: flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-      padding: 20px;
       flex-direction: column;
+      align-items: center;
+      padding: 10px;
+      min-height: 100vh;
     }
 
     .menu {
       display: flex;
+      gap: 24px;
+      margin: 10px 0 20px;
       justify-content: center;
-      gap: 20px;
-      padding: 10px 20px;
-      width: 100%;
-      box-sizing: border-box;
-      border-radius: 8px;
-      margin-bottom: 30px;
     }
 
     .menu a {
-      color: #333;
+      color: var(--text-color);
       text-decoration: none;
-      font-size: 18px;
       font-weight: bold;
-      transition: color 0.3s ease;
+      font-size: 18px;
+      transition: color 0.3s;
     }
 
     .menu a:hover {
-      color: #FFD700;
+      color: var(--accent);
     }
 
     .converter {
-      background: #fdfdfd;
+      background: var(--card-bg);
       border-radius: 16px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
       padding: 30px;
-      max-width: 400px;
+      max-width: 420px;
       width: 100%;
-      border-top: 8px solid #FFD700;
+      box-shadow: 0 0 10px var(--shadow);
     }
 
     h1 {
-      font-size: 24px;
-      margin-bottom: 20px;
-      color: #333;
       text-align: center;
+      font-size: 24px;
+      margin-bottom: 24px;
+      color: var(--accent);
     }
 
     label {
       display: block;
-      margin-bottom: 5px;
+      margin-bottom: 6px;
       font-weight: 600;
     }
 
@@ -69,15 +72,16 @@
       padding: 12px;
       font-size: 16px;
       margin-bottom: 20px;
-      border: 1px solid #ddd;
+      border: none;
       border-radius: 8px;
-      box-sizing: border-box;
+      background-color: var(--input-bg);
+      color: var(--text-color);
     }
 
     .switch {
       display: flex;
-      align-items: center;
       justify-content: space-between;
+      align-items: center;
       margin-bottom: 15px;
     }
 
@@ -86,7 +90,6 @@
       display: inline-block;
       width: 50px;
       height: 26px;
-      margin: 0 10px;
     }
 
     .toggle-switch input {
@@ -97,19 +100,16 @@
 
     .slider {
       position: absolute;
-      cursor: pointer;
-      background-color: #ccc;
+      top: 0; left: 0;
+      right: 0; bottom: 0;
+      background-color: #555;
       border-radius: 34px;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
       transition: 0.4s;
     }
 
     .slider:before {
-      position: absolute;
       content: "";
+      position: absolute;
       height: 18px;
       width: 18px;
       left: 4px;
@@ -120,7 +120,7 @@
     }
 
     input:checked + .slider {
-      background-color: #FFD700;
+      background-color: var(--accent);
     }
 
     input:checked + .slider:before {
@@ -128,26 +128,80 @@
     }
 
     .result {
+      background: #333;
+      color: var(--accent);
+      padding: 16px;
+      border-radius: 8px;
+      text-align: center;
       font-size: 18px;
       font-weight: bold;
-      color: #444;
+    }
+
+    .update-section {
+      margin: 20px 0;
       text-align: center;
-      background-color: #fff8dc;
-      border-radius: 8px;
-      padding: 15px;
     }
 
-    .advertisement-container {
-      width: 100%;
-      height: 800px;
-      margin-top: 40px;
-    }
-
-    .advertisement-container iframe {
-      width: 100%;
-      height: 100%;
+    .update-section button {
+      background-color: var(--accent);
+      color: #000;
       border: none;
+      padding: 12px 24px;
+      font-size: 16px;
+      font-weight: bold;
       border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .update-section button:hover {
+      background-color: #e6c200;
+    }
+
+    .support-section {
+      margin-top: 20px;
+      text-align: center;
+    }
+
+    .support-section button {
+      background-color: var(--accent);
+      color: #000;
+      border: none;
+      padding: 12px 24px;
+      font-size: 16px;
+      font-weight: bold;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .support-section button:hover {
+      background-color: #e6c200;
+    }
+
+    .support-section p {
+      margin-top: 10px;
+      font-size: 14px;
+      color: #bbb;
+    }
+
+    @media (max-width: 480px) {
+      .converter {
+        padding: 20px;
+      }
+
+      h1 {
+        font-size: 20px;
+      }
+
+      .menu {
+        flex-direction: row;
+        gap: 16px;
+      }
+
+      .menu a {
+        font-size: 16px;
+      }
     }
   </style>
 </head>
@@ -179,9 +233,13 @@
     <div class="result" id="result">Digite um valor...</div>
   </div>
 
-  <!-- Anúncio responsivo grande -->
-  <div class="advertisement-container">
-    <iframe src="https://www.rotate4all.com/ptp/promote-275727" allowfullscreen></iframe>
+  <div class="update-section">
+    <button onclick="fetchTopCoins()">Atualizar Cotação</button>
+  </div>
+
+  <div class="support-section">
+    <button onclick="window.open('https://www.rotate4all.com/ptp/promote-275727', '_blank')">Apoie o site</button>
+    <p>É rapidinho, só leva 10 segundos :)</p>
   </div>
 
   <script>
