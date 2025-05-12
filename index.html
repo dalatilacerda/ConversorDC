@@ -266,7 +266,7 @@
   </div>
 
   <div class="update-section">
-    <button onclick="fetchTopCoins()">Atualizar Cotação</button>
+    <div id="countdown">Próxima atualização em: 15 segundos</div>
   </div>
 
   <div class="support-section">
@@ -280,17 +280,23 @@
     const cryptoSelect = document.getElementById('crypto');
     const modeToggle = document.getElementById('modeToggle');
     const modeLabel = document.getElementById('modeLabel');
+    const countdownDiv = document.getElementById('countdown');
 
     let prices = {};
     let coinSymbols = {};
+    let selectedCoin = ''; // Variável para armazenar a moeda selecionada
+    let countdown = 15;
 
+    // Função para atualizar a cotação (limitar para top 10 moedas)
     async function fetchTopCoins() {
       try {
-        const res = await fetch("https://api.coingecko.com/api/v3/coins/markets?vs_currency=brl&order=market_cap_desc&per_page=50&page=1");
+        const res = await fetch("https://api.coingecko.com/api/v3/coins/markets?vs_currency=brl&order=market_cap_desc&per_page=10&page=1");
         const data = await res.json();
         prices = {};
         coinSymbols = {};
-        cryptoSelect.innerHTML = '';
+        cryptoSelect.innerHTML = ''; // Limpa as opções atuais
+
+        // Adiciona as moedas limitadas
         data.forEach(coin => {
           prices[coin.id] = coin.current_price;
           coinSymbols[coin.id] = coin.symbol.toUpperCase();
@@ -299,6 +305,12 @@
           option.textContent = `${coin.name} (${coin.symbol.toUpperCase()})`;
           cryptoSelect.appendChild(option);
         });
+
+        // Se havia uma moeda selecionada, restaura a seleção
+        if (selectedCoin) {
+          cryptoSelect.value = selectedCoin;
+        }
+
         updateConversion();
       } catch (error) {
         resultDiv.textContent = "Erro ao carregar cotações.";
@@ -306,6 +318,7 @@
       }
     }
 
+    // Função para formatar o valor em BRL
     function formatBRL(value) {
       return value.toLocaleString('pt-BR', {
         style: 'currency',
@@ -313,42 +326,13 @@
       });
     }
 
+    // Função para obter o modo de conversão (Decimal ou Satoshis)
     function getCurrentMode() {
       return modeToggle.checked ? "sats" : "decimal";
     }
 
+    // Função para atualizar a conversão
     function updateConversion() {
       const crypto = cryptoSelect.value;
       const mode = getCurrentMode();
-      let value = parseFloat(amountInput.value);
-
-      if (isNaN(value) || value <= 0 || !prices[crypto]) {
-        resultDiv.textContent = "Digite um valor válido.";
-        return;
-      }
-
-      if (mode === "sats") {
-        value = value / 100_000_000;
-      }
-
-      const brlRate = prices[crypto];
-      const converted = value * brlRate;
-
-      resultDiv.textContent = `${value.toFixed(8)} ${coinSymbols[crypto]} = ${formatBRL(converted)}`;
-    }
-
-    amountInput.addEventListener("input", updateConversion);
-    cryptoSelect.addEventListener("change", updateConversion);
-    modeToggle.addEventListener("change", () => {
-      modeLabel.textContent = modeToggle.checked ? "Satoshis" : "Decimal";
-      updateConversion();
-    });
-
-    fetchTopCoins();
-  </script>
-  <footer class="footer">
-    <p>2025 © Todos os direitos reservados a Dalati Lacerda</p>
-    <p>Contato: <a href="mailto:dalaticripto@gmail.com">dalaticripto@gmail.com</a></p>
-  </footer>
-</body>
-</html>
+      let value = parseFloat(amountInput
