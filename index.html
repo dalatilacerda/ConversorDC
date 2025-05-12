@@ -142,20 +142,9 @@
       text-align: center;
     }
 
-    .update-section button {
-      background-color: var(--accent);
-      color: #000;
-      border: none;
-      padding: 12px 24px;
-      font-size: 16px;
-      font-weight: bold;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: background 0.3s;
-    }
-
-    .update-section button:hover {
-      background-color: #e6c200;
+    .update-section p {
+      font-size: 14px;
+      color: #bbb;
     }
 
     .support-section {
@@ -204,35 +193,22 @@
       }
 
       .footer {
-      text-align: center;
-      padding: 30px 20px 20px;
-      margin-top: 40px;
-      color: var(--text-color);
-      font-size: 14px;
-      background-color: transparent;
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
-    }
-
-    .footer a {
-      color: var(--accent);
-      text-decoration: none;
-    }
-
-    .footer a:hover {
-      text-decoration: underline;
-    }
-
-    @media (max-width: 600px) {
-      .container {
-        padding: 20px;
+        text-align: center;
+        padding: 30px 20px 20px;
+        margin-top: 40px;
+        color: var(--text-color);
+        font-size: 14px;
+        background-color: transparent;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
       }
 
-      h1 {
-        font-size: 22px;
+      .footer a {
+        color: var(--accent);
+        text-decoration: none;
       }
 
-      p {
-        font-size: 16px;
+      .footer a:hover {
+        text-decoration: underline;
       }
     }
   </style>
@@ -266,7 +242,7 @@
   </div>
 
   <div class="update-section">
-    <div id="countdown">Próxima atualização em: 15 segundos</div>
+    <p>Próxima atualização em <span id="countdown">30</span>s</p>
   </div>
 
   <div class="support-section">
@@ -280,37 +256,36 @@
     const cryptoSelect = document.getElementById('crypto');
     const modeToggle = document.getElementById('modeToggle');
     const modeLabel = document.getElementById('modeLabel');
-    const countdownDiv = document.getElementById('countdown');
+    const countdownEl = document.getElementById('countdown');
 
     let prices = {};
     let coinSymbols = {};
-    let selectedCoin = ''; // Variável para armazenar a moeda selecionada
-    let countdown = 15;
+    let countdown = 30;
 
-    // Função para atualizar a cotação (limitar para top 10 moedas)
-    async function fetchTopCoins() {
+    async function fetchTopCoins(resetSelect = true) {
       try {
-        const res = await fetch("https://api.coingecko.com/api/v3/coins/markets?vs_currency=brl&order=market_cap_desc&per_page=10&page=1");
+        const res = await fetch("https://api.coingecko.com/api/v3/coins/markets?vs_currency=brl&order=market_cap_desc&per_page=50&page=1");
         const data = await res.json();
+        const selected = cryptoSelect.value;
+
         prices = {};
         coinSymbols = {};
-        cryptoSelect.innerHTML = ''; // Limpa as opções atuais
 
-        // Adiciona as moedas limitadas
+        if (resetSelect) cryptoSelect.innerHTML = '';
+
         data.forEach(coin => {
           prices[coin.id] = coin.current_price;
           coinSymbols[coin.id] = coin.symbol.toUpperCase();
-          const option = document.createElement('option');
-          option.value = coin.id;
-          option.textContent = `${coin.name} (${coin.symbol.toUpperCase()})`;
-          cryptoSelect.appendChild(option);
+
+          if (resetSelect) {
+            const option = document.createElement('option');
+            option.value = coin.id;
+            option.textContent = `${coin.name} (${coin.symbol.toUpperCase()})`;
+            cryptoSelect.appendChild(option);
+          }
         });
 
-        // Se havia uma moeda selecionada, restaura a seleção
-        if (selectedCoin) {
-          cryptoSelect.value = selectedCoin;
-        }
-
+        if (!resetSelect) cryptoSelect.value = selected;
         updateConversion();
       } catch (error) {
         resultDiv.textContent = "Erro ao carregar cotações.";
@@ -318,7 +293,6 @@
       }
     }
 
-    // Função para formatar o valor em BRL
     function formatBRL(value) {
       return value.toLocaleString('pt-BR', {
         style: 'currency',
@@ -326,13 +300,55 @@
       });
     }
 
-    // Função para obter o modo de conversão (Decimal ou Satoshis)
     function getCurrentMode() {
       return modeToggle.checked ? "sats" : "decimal";
     }
 
-    // Função para atualizar a conversão
     function updateConversion() {
       const crypto = cryptoSelect.value;
       const mode = getCurrentMode();
-      let value = parseFloat(amountInput
+      let value = parseFloat(amountInput.value);
+
+      if (isNaN(value) || value <= 0 || !prices[crypto]) {
+        resultDiv.textContent = "Digite um valor válido.";
+        return;
+      }
+
+      if (mode === "sats") {
+        value = value / 100_000_000;
+      }
+
+      const brlRate = prices[crypto];
+      const converted = value * brlRate;
+
+      resultDiv.textContent = `${value.toFixed(8)} ${coinSymbols[crypto]} = ${formatBRL(converted)}`;
+    }
+
+    function startCountdown() {
+      setInterval(() => {
+        countdown--;
+        countdownEl.textContent = countdown;
+        if (countdown === 0) {
+          countdown = 30;
+          fetchTopCoins(false);
+        }
+      }, 1000);
+    }
+
+    amountInput.addEventListener("input", updateConversion);
+    cryptoSelect.addEventListener("change", updateConversion);
+    modeToggle.addEventListener("change", () => {
+      modeLabel.textContent = modeToggle.checked ? "Satoshis" : "Decimal";
+      updateConversion();
+    });
+
+    fetchTopCoins();
+    startCountdown();
+  </script>
+
+  <footer class="footer">
+    <p>2025 © Todos os direitos reservados a Dalati Lacerda</p>
+    <p>Contato: <a href="mailto:dalaticripto@gmail.com">dalaticripto@gmail.com</a></p>
+  </footer>
+</body>
+</html>
