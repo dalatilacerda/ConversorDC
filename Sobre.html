@@ -57,18 +57,47 @@
     }
 
     p {
-      line-height: 1.7;
-      font-size: 17px;
+      font-size: 18px;
+      line-height: 1.6;
       margin-bottom: 20px;
     }
 
-    ul {
+    .button {
+      background-color: var(--accent);
+      color: #000;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
       margin-bottom: 20px;
-      padding-left: 20px;
+      display: block;
+      width: 100%;
+      text-align: center;
+      transition: background 0.3s;
     }
 
-    ul li {
-      margin-bottom: 8px;
+    .button:hover {
+      background-color: #e6c200;
+    }
+
+    .footer {
+      text-align: center;
+      padding: 30px 20px 20px;
+      margin-top: 40px;
+      color: var(--text-color);
+      font-size: 14px;
+      background-color: transparent;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .footer a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .footer a:hover {
+      text-decoration: underline;
     }
 
     @media (max-width: 600px) {
@@ -83,36 +112,29 @@
       p {
         font-size: 16px;
       }
-
-      .menu a {
-        font-size: 15px;
-        padding: 8px 16px;
-      }
     }
   </style>
 </head>
 <body>
 
-  <div class="menu">
-    <a href="index.html">Voltar</a>
-  </div>
-
   <div class="container">
     <h1>Sobre o Conversor Cripto</h1>
-    <p>Este site foi criado para facilitar a conversão de criptomoedas para o real brasileiro (BRL) de forma simples, rápida e atualizada em tempo real.</p>
-    
-    <p>Você pode escolher entre as 50 principais criptomoedas do mercado e digitar o valor que deseja converter. O sistema permite duas formas de entrada:</p>
-    <ul>
-      <li><strong>Decimal:</strong> você digita o valor normalmente, como por exemplo 0.005 BTC.</li>
-      <li><strong>Satoshis:</strong> você pode usar o interruptor para digitar em Satoshis (1 BTC = 100.000.000 Satoshis).</li>
-    </ul>
 
-    <p>A cotação é sempre atualizada automaticamente com base na API do CoinGecko. Mas, se quiser, você pode clicar no botão "Atualizar Cotação" para garantir os valores mais recentes na hora da conversão.</p>
+    <p>Bem-vindo ao Conversor Cripto! Este site foi criado para ajudar os usuários a realizar conversões rápidas e fáceis entre as principais criptomoedas e o real (BRL).</p>
 
-    <p>Se quiser apoiar o projeto, clique no botão “Apoie o site” na página inicial. Sua ajuda é muito bem-vinda!</p>
+    <p>Utilizamos a API do CoinGecko para obter as taxas de câmbio em tempo real, garantindo que as informações estejam sempre atualizadas. Você pode converter valores de criptomoedas como Bitcoin (BTC), Ethereum (ETH), Litecoin (LTC), Dogecoin (DOGE), entre outras, para a moeda brasileira (BRL).</p>
 
-    <p>Obrigado por utilizar o site!</p>
+    <p>Com a interface simples e funcional, basta selecionar a criptomoeda desejada, digitar o valor e o conversor exibirá automaticamente o valor convertido para o real.</p>
+
+    <p>Além disso, contamos com a opção de "Apoiar o site", que redireciona os visitantes para uma plataforma de monetização. Agradecemos qualquer contribuição!</p>
+
+    <button class="button" onclick="window.location.href='index.html'">Voltar ao Conversor</button>
   </div>
+
+  <footer class="footer">
+    <p>2025 © Todos os direitos reservados a Dalati Lacerda</p>
+    <p>Contato: <a href="mailto:dalaticripto@gmail.com">dalaticripto@gmail.com</a></p>
+  </footer>
 
 </body>
 </html>
