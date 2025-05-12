@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sobre - Conversor Cripto</title>
+  <style>
+    :root {
+      --bg-color: #121212;
+      --text-color: #f5f5f5;
+      --accent: #FFD700;
+      --card-bg: #1f1f1f;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      padding: 20px;
+    }
+
+    .menu {
+      display: flex;
+      justify-content: center;
+      gap: 24px;
+      margin-bottom: 30px;
+    }
+
+    .menu a {
+      color: var(--text-color);
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 18px;
+      transition: color 0.3s;
+    }
+
+    .menu a:hover {
+      color: var(--accent);
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: var(--card-bg);
+      padding: 40px;
+      border-radius: 16px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    }
+
+    h1 {
+      color: var(--accent);
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    p {
+      line-height: 1.7;
+      font-size: 17px;
+      margin-bottom: 20px;
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        padding: 20px;
+      }
+
+      h1 {
+        font-size: 22px;
+      }
+
+      p {
+        font-size: 16px;
+      }
+
+      .menu {
+        gap: 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="menu">
+    <a href="index.html">Conversor</a>
+    <a href="#">Sobre</a>
+  </div>
+
+  <div class="container">
+    <h1>Sobre o Conversor Cripto</h1>
+    <p>Este site foi criado para facilitar a conversão de criptomoedas para o real brasileiro (BRL) de forma simples, rápida e atualizada em tempo real.</p>
+    
+    <p>Você pode escolher entre as 50 principais criptomoedas do mercado e digitar o valor que deseja converter. O sistema permite duas formas de entrada:</p>
+    <ul>
+      <li><strong>Decimal:</strong> você digita o valor normalmente, como por exemplo 0.005 BTC.</li>
+      <li><strong>Satoshis:</strong> você pode usar o interruptor para digitar em Satoshis (1 BTC = 100.000.000 Satoshis).</li>
+    </ul>
+
+    <p>A cotação é sempre atualizada automaticamente com base na API do CoinGecko. Mas, se quiser, você pode clicar no botão "Atualizar Cotação" para garantir os valores mais recentes na hora da conversão.</p>
+
+    <p>Se quiser apoiar o projeto, clique no botão “Apoie o site” na página inicial. Sua ajuda é muito bem-vinda!</p>
+
+    <p>Obrigado por utilizar o site!</p>
+  </div>
+
+</body>
+</html>
